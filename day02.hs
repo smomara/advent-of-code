@@ -1,18 +1,16 @@
 import System.IO (readFile)
-import Data.Char (digitToInt)
 
-checkSequence :: [Int] -> Bool
-checkSequence (x:y:xs) =
+valid :: [Int] -> Bool
+valid (x:y:xs) =
     let diffs = zipWith (-) (y:xs) (x:y:xs)
-    in (all (>0) diffs || all (<0) diffs) && all (\d -> 1 <= abs d && abs d <= 3) diffs
+    in (all (>0) diffs || all (<0) diffs) && all (flip elem [1..3] . abs) diffs
 
-canBeValid :: [Int] -> Bool
-canBeValid xs = any checkSequence [take i xs ++ drop (i+1) xs | i <- [0..length xs - 1]]
+valid' :: [Int] -> Bool
+valid' xs = any valid [take i xs ++ drop (i+1) xs | i <- [0..length xs - 1]]
 
 main :: IO ()
 main = do
-    file <- readFile "input/day02.txt"
-    let nums = map (map (read :: String -> Int) . words) . lines $ file
-    print $ length . filter id . map checkSequence $ nums
-    print $ length . filter id . map canBeValid $ nums
+    nums <- map (map read . words) . lines <$> readFile "input/day02.txt"
+    print $ length . filter id . map valid $ nums
+    print $ length . filter id . map valid' $ nums
 
