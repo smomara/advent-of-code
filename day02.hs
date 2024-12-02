@@ -1,8 +1,8 @@
 import System.IO (readFile)
 
 valid :: [Int] -> Bool
-valid (x:y:xs) =
-    let diffs = zipWith (-) (y:xs) (x:y:xs)
+valid xs@(_:rest) =
+    let diffs = zipWith (-) xs rest
     in (all (>0) diffs || all (<0) diffs) && all (flip elem [1..3] . abs) diffs
 
 valid' :: [Int] -> Bool
